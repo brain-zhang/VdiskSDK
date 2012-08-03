@@ -44,8 +44,8 @@
 <br>    dologid: 参考dolog机制
 <br>===========================
 <br>这个函数调用请使用client.post.dir__getlist(dir_id = 0)
-<br>对应关系:                          -----  --    ------
-<br>http://openapi.vdisk.me/?m=      (dir)&a=(getlist)
+<br>对应关系:
+<br>http://openapi.vdisk.me/?m= (dir)&a=(getlist) --> dir__getlist
 <br>
 <br>如上，如果请求方式为GET，则为client.get.XXX
 <br>如果为POST，则为client.post.XXX
