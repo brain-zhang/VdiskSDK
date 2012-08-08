@@ -26,7 +26,7 @@
 <br>print client.post.dir__getlist(dir_id = 0)
 <br>
 <br>说明:
-<br>接口的函数方法是同官方文档的url想对应的，例如:
+<br>接口的函数方法是同官方文档的url相对应的，例如:
 <br>
 <br>==========================
 <br>获得列表
