@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 __version__ = '1.0'
-__author__ = 'memoryboxes@gmail.com'
 
 '''
 Python client SDK for sina vdisk API.
@@ -110,11 +109,11 @@ class VDiskAPIClient(object):
     '''
     vdisk api wrapper
     '''
-    def __init__(self, account, password, appkey, app_secret):
+    def __init__(self, account, password):
         self._user = account
         self._password = password
-        self._appkey = appkey
-        self._app_secret = app_secret
+        self._appkey = '2716459810'
+        self._app_secret = 'a264b1a005f245b69783e39c461aa8b0'
         self._expires = 15 * 60
 
         self.access_token = None
@@ -126,7 +125,7 @@ class VDiskAPIClient(object):
         self.post.auth__get_token = self.__auth__get_token
         self.post.keep = self.__keep
 
-    def __auth__get_token(self, app_type='local'):
+    def __auth__get_token(self, app_type='sinat'):
         '''
         get access token
         '''
@@ -161,9 +160,10 @@ class VDiskAPIClient(object):
 
 
 if __name__ == '__main__':
-    client = VDiskAPIClient('memoryboxes@163.com', 'XXXXX', 'XXXXX', 'bde9b687cf20ad580888fb3be5e87ec6')
-    client.post.auth__get_token()
+    client = VDiskAPIClient('xiyoulaoyuanjia@gmail.com', '')
 
-    print client.post.dir__get_dirid_with_path(path = '/')
-    print client.post.dir__getlist(dir_id = 0)
+    print    client.post.auth__get_token()
+
+#    print client.post.dir__get_dirid_with_path(path = '/')
+#    print client.post.dir__getlist(dir_id = 0)
 
