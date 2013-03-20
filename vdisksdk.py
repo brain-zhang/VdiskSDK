@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 __version__ = '1.0'
-__author__ = 'memoryboxes@gmail.com'
 
 '''
+http://vdisk.me/api/doc
+
 Python client SDK for sina vdisk API.
 support:
 http://openapi.vdisk.me/?a=keep
@@ -45,49 +46,60 @@ except ImportError:
 import time
 import hmac, hashlib
 import urllib, urllib2
+import os
+
 
 _HTTP_GET = 1
 _HTTP_POST = 2
+_HTTP_UPLOAD=3
 
 def _get_json_request(req):
-    resp = urllib2.urlopen(req)
-    body = resp.read()
-    r = json.loads(body)
+    r = json.loads(req)
     if r['err_code'] <> 0:
-        raise APIError(r.error_code, getattr(r, 'err_msg', ''), http_url)
+        raise APIError(r['err_code'], getattr(r, 'err_msg', ''))
     return r
 
 def _http_call(client, url, method, authorization, **kw):
-    '''
-    send an http request and expect to return a json object if no error.
-    '''
-    url_ext = '?token=' + client.access_token
     params = {}
+    uploadPa=''
+#	    send an http request and expect to return a json object if no error.
+    url_ext = '?token=' + client.access_token
     params['token'] = client.access_token
-    for k, v in kw.iteritems():
-        params[k] = v
-        url_ext += ('&%s=%s' % (k, v))
-
-
     http_url = (method == _HTTP_GET) and ('%s%s' %(url ,url_ext)) or ('%s' % (url))
-    params = (method == _HTTP_GET) and None or params
-    req = (method == _HTTP_GET) and urllib2.Request(http_url) or urllib2.Request(http_url, urllib.urlencode(params))
-
-    return _get_json_request(req)
+    for k, v in kw.iteritems():
+        if method == _HTTP_UPLOAD and k == 'file':
+		    uploadPa+=" -F "+k+"=@\""+str(v)+"\""
+        elif method==_HTTP_UPLOAD:
+		    uploadPa+=" -F "+k+"="+str(v)
+        else:
+            params[k] = v
+        url_ext += ('&%s=%s' % (k, v))
+    if method ==_HTTP_UPLOAD:
+        uploadPa+=" -F token="+params['token']
+        cmd="curl"+uploadPa+" \""+http_url+"\""
+        print cmd
+        return _get_json_request(os.popen(cmd).read()) 
+#        print body  
+    else:
+        params = (method == _HTTP_GET) and None or params
+        req = (method == _HTTP_GET) and urllib2.Request(http_url) or urllib2.Request(http_url, urllib.urlencode(params))
+        resp = urllib2.urlopen(req)
+        body = resp.read()
+    return _get_json_request(body)
 
 
 class APIError(StandardError):
     '''
     raise APIError if got failed json message.
     '''
-    def __init__(self, error_code, error, request):
+    def __init__(self, error_code, error):
         self.error_code = error_code
         self.error = error
-        self.request = request
+#        self.request = request
         StandardError.__init__(self, error)
 
     def __str__(self):
-        return 'APIError: %s: %s, request: %s' % (self.error_code, self.error, self.request)
+        return 'APIError: %s: %s' % (self.error_code, self.error)
 
 
 class HttpObject(object):
@@ -100,9 +112,9 @@ class HttpObject(object):
 
     def __getattr__(self, attr):
         def wrap(**kw):
-            return _http_call(client,
+           return _http_call(self.client,
                     '%s?m=%s&a=%s' % (self.client.api_url, attr.split('__')[0], attr.split('__')[1]),
-                    self.method, self.client.access_token, **kw)
+                    self.method, self.client.access_token, **kw) 
         return wrap
 
 
@@ -110,23 +122,24 @@ class VDiskAPIClient(object):
     '''
     vdisk api wrapper
     '''
-    def __init__(self, account, password, appkey, app_secret):
+    def __init__(self, account, password):
         self._user = account
         self._password = password
-        self._appkey = appkey
-        self._app_secret = app_secret
+        self._appkey = '2716459810'
+        self._app_secret = 'a264b1a005f245b69783e39c461aa8b0'
         self._expires = 15 * 60
 
         self.access_token = None
         self.api_url = 'http://openapi.vdisk.me/'
         self.get = HttpObject(self, _HTTP_GET)
         self.post = HttpObject(self, _HTTP_POST)
+        self.upload=HttpObject(self,_HTTP_UPLOAD)
 
         #just hack code for get_token methord ...
         self.post.auth__get_token = self.__auth__get_token
         self.post.keep = self.__keep
 
-    def __auth__get_token(self, app_type='local'):
+    def __auth__get_token(self, app_type='sinat'):
         '''
         get access token
         '''
@@ -145,7 +158,9 @@ class VDiskAPIClient(object):
             'signature' : _get_signature(self._user, self._appkey, self._password, self._app_secret, str_time)}
 
         req = urllib2.Request(self.api_url + '?m=auth&a=get_token', urllib.urlencode(values))
-        json_token_res = _get_json_request(req)
+        resp = urllib2.urlopen(req)
+        body = resp.read()
+        json_token_res = _get_json_request(body)
         self.access_token = json_token_res['data']['token']
         return json_token_res
 
@@ -157,13 +172,16 @@ class VDiskAPIClient(object):
         values = {'token' : self.access_token}
 
         req = urllib2.Request(self.api_url + '?a=keep', urllib.urlencode(values))
-        return _get_json_request(req)
+        resp = urllib2.urlopen(req)
+        body = resp.read()
+        return _get_json_request(body)
 
 
 if __name__ == '__main__':
-    client = VDiskAPIClient('memoryboxes@163.com', 'XXXXX', 'XXXXX', 'bde9b687cf20ad580888fb3be5e87ec6')
-    client.post.auth__get_token()
+    client = VDiskAPIClient('xiyoulaoyuanjia@gmail.com', '')
 
-    print client.post.dir__get_dirid_with_path(path = '/')
-    print client.post.dir__getlist(dir_id = 0)
+    print    client.post.auth__get_token()
+
+#    print client.post.dir__get_dirid_with_path(path = '/')
+#    print client.post.dir__getlist(dir_id = 0)
 
