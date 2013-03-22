@@ -26,11 +26,12 @@ How to use
     print client.post.dir__get_dirid_with_path(path = '/')
     print client.post.dir__getlist(dir_id = 0)
 
-    说明:
-    接口的函数方法是同官方文档的url相对应的，例如:
 
 For example
 ----------------
+
+    说明:
+    接口的函数方法是同官方文档的url相对应的，例如:
 
     1.获得列表
 
@@ -113,5 +114,5 @@ update  更正了 上传文档部分的问题 并增加了 upload 方式调用 �
 
 Authors
 ----------------
-    1.xiyoulaoyuanjia@gmai.com
-    2.memoryboxes@gmail.com
+    xiyoulaoyuanjia@gmai.com
+    memoryboxes@gmail.com
