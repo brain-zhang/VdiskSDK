@@ -29,7 +29,7 @@ How to use
     说明:
     接口的函数方法是同官方文档的url相对应的，例如:
 
-for example
+For example
 ----------------
 
     1.获得列表
@@ -86,7 +86,7 @@ for example
         调用方法:
         client.upload.file__upload_file(dir_id = 0, file = 'xxx', cover= 'yes')
 
-problem
+Problem
 ----------------
 
 虽然某些接口说可以支持GET方式，但调用失败，强烈建议都用POST调用
@@ -99,19 +99,19 @@ License
 
 VDiskSDK is released under BSD license.
 
-thanks
+Thanks
 ----------------
 
 参考了新浪微博的python sdk实现:
 http://michaelliao.github.com/sinaweibopy/
 非常感谢作者。
 
-update
+Update
 ----------------
 
 update  更正了 上传文档部分的问题 并增加了 upload 方式调用 其它与上面一致
 
-authors
+Authors
 ----------------
-xiyoulaoyuanjia@gmai.com
-memoryboxes@gmail.com
+    1.xiyoulaoyuanjia@gmai.com
+    2.memoryboxes@gmail.com
