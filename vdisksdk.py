@@ -62,7 +62,7 @@ def _get_json_request(req):
 def _http_call(client, url, method, authorization, **kw):
     params = {}
     uploadPa=''
-#	    send an http request and expect to return a json object if no error.
+    #send an http request and expect to return a json object if no error.
     url_ext = '?token=' + client.access_token
     params['token'] = client.access_token
     http_url = (method == _HTTP_GET) and ('%s%s' %(url ,url_ext)) or ('%s' % (url))
@@ -78,8 +78,8 @@ def _http_call(client, url, method, authorization, **kw):
         uploadPa+=" -F token="+params['token']
         cmd="curl"+uploadPa+" \""+http_url+"\""
         print cmd
-        return _get_json_request(os.popen(cmd).read()) 
-#        print body  
+        return _get_json_request(os.popen(cmd).read())
+    #print body
     else:
         params = (method == _HTTP_GET) and None or params
         req = (method == _HTTP_GET) and urllib2.Request(http_url) or urllib2.Request(http_url, urllib.urlencode(params))
@@ -95,7 +95,7 @@ class APIError(StandardError):
     def __init__(self, error_code, error):
         self.error_code = error_code
         self.error = error
-#        self.request = request
+    #self.request = request
         StandardError.__init__(self, error)
 
     def __str__(self):
@@ -114,7 +114,7 @@ class HttpObject(object):
         def wrap(**kw):
            return _http_call(self.client,
                     '%s?m=%s&a=%s' % (self.client.api_url, attr.split('__')[0], attr.split('__')[1]),
-                    self.method, self.client.access_token, **kw) 
+                    self.method, self.client.access_token, **kw)
         return wrap
 
 
@@ -180,8 +180,7 @@ class VDiskAPIClient(object):
 if __name__ == '__main__':
     client = VDiskAPIClient('xiyoulaoyuanjia@gmail.com', '')
 
-    print    client.post.auth__get_token()
-
-#    print client.post.dir__get_dirid_with_path(path = '/')
-#    print client.post.dir__getlist(dir_id = 0)
+    print client.post.auth__get_token()
+    print client.post.dir__getlist(dir_id = 0)
+    print client.upload.file__upload_file(dir_id = 0, file='cycle.jpg', cover='yes')
 
