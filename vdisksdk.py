@@ -68,7 +68,7 @@ def _http_call(client, url, method, authorization, **kw):
     http_url = (method == _HTTP_GET) and ('%s%s' %(url ,url_ext)) or ('%s' % (url))
     for k, v in kw.iteritems():
         if method == _HTTP_UPLOAD and k == 'file':
-		    uploadPa+=" -F "+k+"=@"+str(v)
+		    uploadPa+=" -F "+k+"=@\""+str(v)+"\""
         elif method==_HTTP_UPLOAD:
 		    uploadPa+=" -F "+k+"="+str(v)
         else:
@@ -77,6 +77,7 @@ def _http_call(client, url, method, authorization, **kw):
     if method ==_HTTP_UPLOAD:
         uploadPa+=" -F token="+params['token']
         cmd="curl"+uploadPa+" \""+http_url+"\""
+        print cmd
         return _get_json_request(os.popen(cmd).read()) 
 #        print body  
     else:
