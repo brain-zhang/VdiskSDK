@@ -85,5 +85,6 @@
 <br>参考了新浪微博的python sdk实现:
 <br>http://michaelliao.github.com/sinaweibopy/
 <br>非常感谢作者。
-<br>
+<br>----------------------------------
+<br>update  更正了 上传文档部分的问题 并增加了 upload 方式调用 其它与上面一致 
 <br>
