@@ -114,5 +114,5 @@ update  更正了 上传文档部分的问题 并增加了 upload 方式调用 �
 
 Authors
 ----------------
-    xiyoulaoyuanjia@gmai.com
-    memoryboxes@gmail.com
+    1.xiyoulaoyuanjia@gmail.com
+    2.memoryboxes@gmail.com
