@@ -68,12 +68,13 @@ def _http_call(client, url, method, authorization, **kw):
     http_url = (method == _HTTP_GET) and ('%s%s' %(url ,url_ext)) or ('%s' % (url))
     for k, v in kw.iteritems():
         if method == _HTTP_UPLOAD and k == 'file':
-		    uploadPa+=" -F "+k+"=@\""+str(v)+"\""
+            uploadPa+=" -F "+k+"=@\""+str(v)+"\""
         elif method==_HTTP_UPLOAD:
 		    uploadPa+=" -F "+k+"="+str(v)
         else:
             params[k] = v
-        url_ext += ('&%s=%s' % (k, v))
+        print k,v
+        url_ext += ('&%s=%s' % (k,v))
     if method ==_HTTP_UPLOAD:
         uploadPa+=" -F token="+params['token']
         cmd="curl"+uploadPa+" \""+http_url+"\""
@@ -123,6 +124,9 @@ class VDiskAPIClient(object):
     vdisk api wrapper
     '''
     def __init__(self, account, password):
+        import sys
+        reload(sys)
+        sys.setdefaultencoding('utf8')
         self._user = account
         self._password = password
         self._appkey = '2716459810'
@@ -178,9 +182,16 @@ class VDiskAPIClient(object):
 
 
 if __name__ == '__main__':
-    client = VDiskAPIClient('xiyoulaoyuanjia@gmail.com', '')
+#	import sys
+#	reload(sys)
+#	sys.setdefaultencoding('utf8')
+	client = VDiskAPIClient('', '')
+	client.post.auth__get_token()
+	dir_id=client.post.dir__get_dirid_with_path(path = '/GetLink')['data']['id']
+#	download_page=client.upload.file__upload_share_file(dir_id=dir_id,file="/home/yuanjia/Desktop/OSRegex.png",cover='yes')['data']['download_page']
+	download_page=client.upload.file__upload_share_file(dir_id=dir_id,file="/home/yuanjia/Desktop/开源版权.jpg",cover='yes')['data']['download_page']
 
-    print client.post.auth__get_token()
-    print client.post.dir__getlist(dir_id = 0)
-    print client.upload.file__upload_file(dir_id = 0, file='cycle.jpg', cover='yes')
+#    print client.post.dir__get_dirid_with_path(path = '/')
+#    print client.post.dir__getlist(dir_id = 0)
+#    print client.upload.file__upload_file(dir_id = 0, file='cycle.jpg', cover='yes')
 
